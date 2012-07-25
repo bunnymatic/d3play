@@ -5,15 +5,16 @@ $(function() {
     .attr('width', '100%')
     .attr('height','100%')
     .append('g').attr('id', 'interim').append('g').attr('id', 'viewport');
-  
-  var rads = [ 1,10,10,20,200,2000 ];
+
+  var bounding_box_data = [];
+  var rads = [ 1,10,10,20,200 ];
   var circles_data = _.map(rads, function(v) {
     var cx = v * Math.random();
     var cy = v / Math.random();
     return { cx: cx, cy : cy, r:v };
   });
-  console.log(circles_data);
   var circles = vis.selectAll('circle, text').data(circles_data);
+  var bbs = vis.selectAll('rect').data(bounding_box_data);
   
   var e = circles.enter()
     .append('circle')
@@ -28,6 +29,10 @@ $(function() {
     .attr('x', function(d) { return d.cx; })
     .attr('y', function(d) { return d.cy; })
     .text( function(d) { return d.r; });
+
+  d3.selectAll('text,g,circle').on('mouseover', updateBBox);
+
+  var updateBBox = function() {};
 
   var oldscale;
   var scaleIt = function() {
@@ -47,7 +52,7 @@ $(function() {
     oldscale = scale;
     scale = scale *  .9; // account for margin
     var pos = $('#container').position();
-    var centerPt = [-bb.x , -bb.y  ].join(",");
+    var centerPt = [0,0].join(',')
     console.log('bounds', _.map(bb, function(k,v) { return v + " => " + k;}));
     console.log('scale', scale);
 
