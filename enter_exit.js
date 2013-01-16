@@ -1,18 +1,5 @@
 MyD3 = {}
 
-$.fn.showMethod = function() {
-  var inArgs = arguments;
-  var init = function(opts) {
-    var namespace = 'MyD3' || opts.namespace;
-    var method = $(this).data('method');
-    var m = eval([namespace, method].join('.'));
-    $(this).html($('<pre><code>' + m.toString() + '</code></pre>'));
-  };
-  return this.each(function() {
-    init.apply( this, inArgs );    
-  });
-};
-
 $(function() {
 
   var $main = $('body section.main');
@@ -267,7 +254,10 @@ $(function() {
 
   $('.run_again').bind('click', function(ev) {
     ev.preventDefault();
-    eval('MyD3.'+$(this).data('method')+'()')
+    var m = $(this).data('method');
+    if(MyD3.hasOwnProperty(m)) {
+      MyD3[m]();
+    }
     return false;
   });
 });
