@@ -22,20 +22,22 @@ $(function() {
     '<div class="line">'+
       '<h3><%= method_name %></h3>'+
       '<a href="#" class="run_again" data-method="<%=method_name%>">(repeat)</a>'+
-      '<div class="unit size1of2">'+
+      '<div class="unit size1of3">'+
       '<div id="<%= method_class %>" class="container">'+
       '</div>'+
+      '<%= hint %>'+
       '</div>'+
-      '<div class="unit size1of2">'+
+      '<div class="unit size2of3">'+
       '<div data-method="<%= method_name %>" class="code">'+
       '</div>'+
       '</div>'+
       '</div>'
   );
       
-  var addRow = function(method_name, method_class) {
-    if (!$main.find('#'+method_class).length) {
-      $main.append(rowTemplate({method_name: method_name, method_class: method_class}));
+  var addRow = function(methodName, methodClass) {
+    if (!$main.find('#'+methodClass).length) {
+      var hint = MyD3[methodName].hint || '';
+      $main.append(rowTemplate({method_name: methodName, method_class: methodClass, hint:hint}));
     }
   };
 
@@ -167,7 +169,7 @@ $(function() {
         .append('li')
         .text(function(d){return d;});
       
-      // exit
+      // exit - remove elements
       li.exit().remove();
       
     };
@@ -175,6 +177,9 @@ $(function() {
     /* try calling this with more data */
     this.enterUpdateExit2Draw(data); 
   }
+  MyD3.enterUpdateExit2.hint = "<div class='hint'>"+
+    "Try<pre><code>MyD3.enterUpdateExit2Draw([1]);\nMyD3.enterUpdateExit2Draw([1,2,'this','that']);</code></pre>"+
+    "</div>";
 
   MyD3.enterUpdateExit2();
 
@@ -197,7 +202,7 @@ $(function() {
         .append('li')
         .text(function(d){return d;});
       
-      // exit
+      // exit - change element color
       li.exit()
         .style("background-color", "#fafafa")
         .style('color', 'purple');
@@ -207,8 +212,55 @@ $(function() {
     /* try calling this with more data */
     this.enterUpdateExit3Draw(data); 
   }
+  MyD3.enterUpdateExit3.hint = "<div class='hint'>"+
+    "Try<pre><code>MyD3.enterUpdateExit3Draw([1,2]);\nMyD3.enterUpdateExit3Draw([1,2,'this','that']);</code></pre>"+
+    "</div>";
 
   MyD3.enterUpdateExit3();
+
+  MyD3.eueTransition = function() {
+    
+    addRow('eueTransition', 
+           'euet');
+
+    var vis = d3.select('#euet')
+      .append('ul')
+    
+    this.eueTransitionDraw = function(inputData) {
+      
+      // update
+      var li = d3.select("#euet ul").selectAll('li')
+        .data(inputData);
+      
+      // enter
+      li.enter()
+        .append('li')
+        .text(function(d){return d;})
+        .style('opacity',0.0)
+        .style("background-color", "white")
+        .transition()
+        .duration(4000)
+        .style("opacity", 1);
+      
+      // exit - change element color
+      li.exit()
+        .transition()
+        .duration(1000)
+        .style("background-color", "red")
+        .style('color', 'purple')
+        .remove();
+      
+    };
+    
+    /* try calling this with more data */
+    this.eueTransitionDraw(data); 
+  }
+  MyD3.eueTransition.hint = "<div class='hint'>"+
+    "Try<pre><code>MyD3.eueTransitionDraw([1,2]);\nMyD3.eueTransitionDraw([1,2,'this','that']);</code></pre>"+
+    "</div>";
+
+  MyD3.eueTransition();
+
 
   /** document */
   $('.code').showMethod();
